@@ -1,8 +1,6 @@
-# Welcome to React Router!
+# Rocsi Birthday
 
-A modern, production-ready template for building full-stack React applications using React Router.
-
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+A React Router + Vite application for managing birthday invitations with Supabase authentication.
 
 ## Features
 
@@ -12,7 +10,42 @@ A modern, production-ready template for building full-stack React applications u
 - 🔄 Data loading and mutations
 - 🔒 TypeScript by default
 - 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+- 🔐 Supabase authentication
+- 🎉 Invitation system with dynamic routes
+
+## Supabase Setup
+
+This application requires a Supabase project with the following configuration:
+
+### Environment Variables
+
+Create a `.env` file in the root directory with the following variables:
+
+```bash
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+### Database Schema
+
+You need to create an `invitations` table in your Supabase database with the following structure:
+
+```sql
+CREATE TABLE invitations (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  nickname TEXT NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+```
+
+### Getting Supabase Tokens
+
+1. Go to [Supabase](https://supabase.com) and create a new project
+2. Navigate to your project dashboard
+3. Go to Settings > API
+4. Copy the "Project URL" and "anon public" key
+5. Add these to your `.env` file
 
 ## Getting Started
 
@@ -34,6 +67,11 @@ npm run dev
 
 Your application will be available at `http://localhost:5173`.
 
+## Routes
+
+- `/` - Home page with welcome message
+- `/i/:nickname/:code` - Invitation page that authenticates users and displays their nickname
+
 ## Building for Production
 
 Create a production build:
@@ -49,10 +87,10 @@ npm run build
 To build and run using Docker:
 
 ```bash
-docker build -t my-app .
+docker build -t rocsi-bday .
 
 # Run the container
-docker run -p 3000:3000 my-app
+docker run -p 3000:3000 rocsi-bday
 ```
 
 The containerized application can be deployed to any platform that supports Docker, including:
@@ -84,4 +122,4 @@ This template comes with [Tailwind CSS](https://tailwindcss.com/) already config
 
 ---
 
-Built with ❤️ using React Router.
+Built with ❤️ using React Router and Supabase.
