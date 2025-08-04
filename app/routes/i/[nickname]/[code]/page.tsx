@@ -1,6 +1,24 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { supabase } from "../../../../lib/supabase";
+import blackRibbon from "../../../../assets/black-ribbon.webp";
+import discoBall from "../../../../assets/disco-ball.png";
+import redStar from "../../../../assets/red-star.png";
+import cutoutR from "../../../../assets/cutout/r.png";
+import cutoutO from "../../../../assets/cutout/o.png";
+import cutoutC from "../../../../assets/cutout/c.png";
+import cutoutS from "../../../../assets/cutout/s.png";
+import cutoutI from "../../../../assets/cutout/i.png";
+import balloon2 from "../../../../assets/balloons/2.png";
+import balloon3 from "../../../../assets/balloons/3.png";
+import her from "../../../../assets/her.png";
+import birthdayHat from "../../../../assets/birthday-hat.png";
+import lipstickKiss from "../../../../assets/lipstick-kiss.png";
+import hibiscus from "../../../../assets/hibiscus.png";
+import redMartini from "../../../../assets/red-martini.png";
+import discoCat from "../../../../assets/disco-cat.png";
+import { RcsCheckbox } from "~/lib/ui/checkbox";
+import { RcsButton } from "~/lib/ui/button";
 
 export function meta() {
   return [
@@ -11,16 +29,33 @@ export function meta() {
 
 export default function InvitationPage() {
   const { code } = useParams();
-  const navigate = useNavigate();
   const [userNickname, setUserNickname] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [updateBtnState, setUpdateBtnState] = useState<
+    "loading" | "success" | "error" | null
+  >(null);
   const [error, setError] = useState<string | null>(null);
+
+  const [presenceStatus, setPresenceStatus] = useState<"yes" | "no" | null>(
+    "yes"
+  );
+
+  function handleUpdatePresence() {
+    setUpdateBtnState("loading");
+    setTimeout(() => {
+      setUpdateBtnState("success");
+      setTimeout(() => {
+        setUpdateBtnState(null);
+      }, 1000);
+    }, 1000);
+  }
 
   useEffect(() => {
     async function handleInvitation() {
       if (!code) {
         setError("Link de invitație invalid");
-        setLoading(false);
+        setIsLoading(false);
         return;
       }
 
@@ -34,31 +69,31 @@ export default function InvitationPage() {
         if (rpcError) {
           console.error("RPC error:", rpcError);
           setError("Cod de invitație invalid");
-          setLoading(false);
+          setIsLoading(false);
           return;
         }
 
         if (!invitationData || invitationData.length === 0) {
           setError("Cod de invitație invalid");
-          setLoading(false);
+          setIsLoading(false);
           return;
         }
 
         // Get the nickname from the returned record
         const invitation = invitationData[0];
         setUserNickname(invitation.nickname);
-        setLoading(false);
+        setIsLoading(false);
       } catch (err) {
         console.error("Unexpected error:", err);
         setError("A apărut o eroare neașteptată");
-        setLoading(false);
+        setIsLoading(false);
       }
     }
 
     handleInvitation();
   }, [code]);
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100">
         <div className="text-center">
@@ -87,88 +122,147 @@ export default function InvitationPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 py-8 px-4">
-      <div className="max-w-2xl mx-auto">
-        {/* Header with confetti effect */}
-        <div className="text-center mb-8">
-          <div className="animate-bounce mb-4">
-            <div className="text-8xl">🎂</div>
-          </div>
-          <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent mb-2">
-            Ziua Mea!
-          </h1>
-          <div className="flex justify-center space-x-2 text-2xl">
-            <span className="animate-pulse">🎈</span>
-            <span className="animate-pulse delay-100">🎊</span>
-            <span className="animate-pulse delay-200">🎈</span>
-          </div>
+    <div className="min-h-screen py-1 bg-beige relative overflow-x-hidden">
+      <div className="h-2 w-full bg-black my-6"></div>
+
+      <div className="absolute left-1/2 top-0 transform -translate-x-1/2 w-sm h-full">
+        <img
+          src={blackRibbon}
+          alt="Black ribbon decoration"
+          className="h-auto w-48 mx-auto"
+        />
+
+        <div className="h-auto w-40 -my-14 -mx-16 relative">
+          <img src={discoBall} alt="Disco ball decoration" />
+          <img
+            src={redStar}
+            alt="Red star decoration"
+            className="absolute top-8 left-32 w-10 transform -rotate-12"
+          />
+          <img
+            src={redStar}
+            alt="Red star decoration"
+            className="absolute top-34 left-14 w-10 transform -rotate-12"
+          />
         </div>
 
-        {/* Main invitation card */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl p-8 md:p-12 mb-8 transform hover:scale-105 transition-transform duration-300">
-          <div className="text-center">
-            {userNickname && (
-              <div className="mb-6">
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
-                  Salut,{" "}
-                  <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                    {userNickname}
-                  </span>
-                  !
-                </h2>
-                <p className="text-lg md:text-xl text-gray-600">
-                  Ești invitat la ziua mea.
-                </p>
-              </div>
-            )}
+        <div className="absolute -right-3 top-40 transform rotate-10 flex gap-1">
+          <img
+            src={balloon2}
+            alt="Balloon"
+            className="w-8 h-12 transform rotate-8"
+          />
+          <img
+            src={balloon3}
+            alt="Balloon"
+            className="w-8 h-13 transform rotate-4"
+          />
+        </div>
 
-            <div className="space-y-4 text-lg md:text-xl text-gray-700">
-              <p>
-                Te aștept{" "}
-                <span className="font-bold text-purple-600">
-                  sâmbătă, 23 august
-                </span>
-              </p>
-              <p>
-                la{" "}
-                <span className="font-bold text-pink-600">The Guild Hall</span>
-              </p>
-              <p>
-                ora <span className="font-bold text-blue-600">19:00</span>
-              </p>
-              <p className="text-lg md:text-xl font-semibold text-purple-700 mt-6">
-                să jucăm un{" "}
-                <span className="bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent font-bold">
-                  Secret Hitler
-                </span>{" "}
-                împreună!
-              </p>
+        <div className="absolute -left-3 top-130">
+          <img src={her} alt="her" className="w-40 transform -rotate-10" />
+          <img
+            src={birthdayHat}
+            alt="birthday hat"
+            className="absolute -top-13 left-3 w-20 transform -rotate-10"
+          />
+        </div>
+
+        <div className="absolute -right-8 top-63">
+          <img src={lipstickKiss} alt="lipstick kiss" className="w-20" />
+        </div>
+
+        <div className="absolute -right-10 top-80">
+          <img src={hibiscus} alt="hibiscus" className="w-20" />
+        </div>
+
+        <div className="absolute right-4 top-100">
+          <img src={redMartini} alt="red martini" className="w-10" />
+        </div>
+
+        <div className="absolute right-8 top-150">
+          <img src={discoBall} alt="disco ball" className="w-40" />
+        </div>
+
+        <div className="absolute right-20 top-140">
+          <img
+            src={discoCat}
+            alt="disco cat"
+            className="w-35 transform -scale-x-100"
+          />
+        </div>
+      </div>
+
+      {/* Page container */}
+      <div className="absolute left-2 right-2 sm:left-1/2 top-40 sm:transform sm:-translate-x-1/2 sm:mx-0 sm:w-sm max-w-xs mx-auto">
+        <div className="h-20 flex items-center justify-center gap-2">
+          {/* Rocsi cutout container */}
+          <img src={cutoutR} alt="R" className="w-10" />
+          <img src={cutoutO} alt="O" className="w-10" />
+          <img src={cutoutC} alt="C" className="w-10" />
+          <img src={cutoutS} alt="S" className="w-10" />
+          <div className="">
+            <img src={cutoutI} alt="I" className="w-8 inline-block" />
+            <div className="font-caveat text-5xl text-center inline-block align-bottom -mr-5">
+              's
             </div>
           </div>
         </div>
-
-        {/* Fun elements */}
-        <div className="text-center space-y-4">
-          <div className="flex justify-center space-x-4 text-3xl">
-            <span className="animate-bounce">🎮</span>
-            <span className="animate-bounce delay-75">🎭</span>
-            <span className="animate-bounce delay-150">🍕</span>
-            <span className="animate-bounce delay-200">🥤</span>
-          </div>
-
-          <p className="text-gray-600 font-medium">Va fi distractiv! 🎉</p>
+        <div className="font-caveat text-5xl text-center">birthday</div>
+        <div className="text-center font-courier-prime text-sm mt-7 px-10">
+          it's my birthday and you're so invited. nu fac petrecere. doar dau un
+          pretext bun să ne vedem.
         </div>
-
-        {/* RSVP button */}
-        <div className="text-center mt-8">
-          <button
-            onClick={() => navigate("/")}
-            className="px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-full hover:from-green-600 hover:to-emerald-700 transform hover:scale-105 transition-all duration-200 font-bold text-lg shadow-lg"
-          >
-            Confirmă participarea! ✅
-          </button>
+        <div className="text-center font-montserrat-alternates text-xl mt-3">
+          <div className="relative text-center">
+            {/* <div className="absolute left-0 right-0 anim-appear-variant-1">
+              sâmbătă 23 august?
+            </div> */}
+            <div className="absolute left-0 right-0">duminicǎ 24 august</div>
+          </div>
+          <br />
+          ora 17:00
+          <br />
+          the guild hall
+        </div>
+        <div className="mt-12 flex justify-end px-1 beige-shadow">
+          <div className="font-courier-prime w-50">
+            <div className="text-right">o să ajungi?</div>
+            <RcsCheckbox
+              className="justify-end mt-2"
+              label="da! ne vedem"
+              checked={presenceStatus === "yes"}
+              onChange={() => setPresenceStatus("yes")}
+              id="chk-sat"
+            />
+            <RcsCheckbox
+              className="justify-end mt-2"
+              label="nu..."
+              checked={presenceStatus === "no"}
+              onChange={() => setPresenceStatus("no")}
+              id="chk-sun"
+            />
+            <div className="flex justify-end mt-3">
+              <RcsButton
+                className={
+                  updateBtnState === "success"
+                    ? "bg-green-300"
+                    : updateBtnState === "error"
+                      ? "bg-red-300"
+                      : ""
+                }
+                noBg={
+                  updateBtnState === "success" || updateBtnState === "error"
+                }
+                label={presenceStatus === "no" ? "confirmă :(" : "confirmă!"}
+                onClick={handleUpdatePresence}
+                isLoading={updateBtnState === "loading"}
+              />
+            </div>
+          </div>
         </div>
       </div>
+      <div className="h-2 w-full bg-black mt-190 mb-10"></div>
     </div>
   );
 }

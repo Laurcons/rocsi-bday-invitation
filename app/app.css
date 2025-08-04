@@ -3,13 +3,95 @@
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-caveat: "Caveat", cursive;
+  --font-courier-prime: "Courier Prime", monospace;
+  --font-montserrat-alternates: "Montserrat Alternates", sans-serif;
+  --color-beige: #eee8da;
+  --color-beige-hover: #f0e3c5;
+  --color-beige-accent: #edd9ab;
 }
 
 html,
 body {
-  @apply bg-white dark:bg-gray-950;
+  /* @apply bg-white dark:bg-gray-950; */
 
-  @media (prefers-color-scheme: dark) {
+  /* @media (prefers-color-scheme: dark) {
     color-scheme: dark;
+  } */
+}
+
+@keyframes appear-variant-1 {
+  0% {
+    opacity: 0;
   }
+  45% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  95% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes appear-variant-2 {
+  0% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 0;
+  }
+  95% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.anim-appear-variant-1 {
+  animation: appear-variant-1 2s ease-in-out infinite;
+}
+
+.anim-appear-variant-2 {
+  animation: appear-variant-2 2s ease-in-out infinite;
+}
+
+@keyframes gradient-slide {
+  0% {
+    background-position: 200% 0%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+.loading-background {
+  --c1: var(--color-beige);
+  --c2: var(--color-beige-accent);
+  background: linear-gradient(90deg, var(--c1) 0%, var(--c1) 30%, var(--c2) 50%, var(--c1) 70%, var(--c1) 100%);
+  background-size: 200% 100%;
+  cursor: not-allowed; /* Makes sense for loading state */
+  animation: gradient-slide .8s linear infinite;
+}
+
+.beige-shadow {
+  text-shadow: 
+  0 0 10px var(--color-beige),
+  0 0 10px var(--color-beige),
+  0 0 10px var(--color-beige),
+  0 0 10px var(--color-beige),
+  0 0 10px var(--color-beige),
+  0 0 10px var(--color-beige),
+  0 0 10px var(--color-beige);
 }
