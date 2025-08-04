@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { supabase } from "../../../../lib/supabase";
+import { PresenceStatus } from "../../../../lib/types";
+import {
+  sendPageOpenEvent,
+  sendPresenceChangedEvent,
+} from "../../../../lib/events";
 import blackRibbon from "../../../../assets/black-ribbon.webp";
 import discoBall from "../../../../assets/disco-ball.png";
 import redStar from "../../../../assets/red-star.png";
@@ -37,18 +42,30 @@ export default function InvitationPage() {
   >(null);
   const [error, setError] = useState<string | null>(null);
 
-  const [presenceStatus, setPresenceStatus] = useState<"yes" | "no" | null>(
-    "yes"
+  const [presenceStatus, setPresenceStatus] = useState<PresenceStatus | null>(
+    PresenceStatus.ATTENDING
   );
 
-  function handleUpdatePresence() {
+  async function handleUpdatePresence() {
+    if (!code) return;
+
     setUpdateBtnState("loading");
-    setTimeout(() => {
+
+    try {
+      // Send presence changed event
+      await sendPresenceChangedEvent(code, presenceStatus);
+
       setUpdateBtnState("success");
       setTimeout(() => {
         setUpdateBtnState(null);
       }, 1000);
-    }, 1000);
+    } catch (error) {
+      console.error("Error updating presence:", error);
+      setUpdateBtnState("error");
+      setTimeout(() => {
+        setUpdateBtnState(null);
+      }, 1000);
+    }
   }
 
   useEffect(() => {
@@ -82,6 +99,12 @@ export default function InvitationPage() {
         // Get the nickname from the returned record
         const invitation = invitationData[0];
         setUserNickname(invitation.nickname);
+
+        // Send page open event
+        if (code) {
+          await sendPageOpenEvent(code);
+        }
+
         setIsLoading(false);
       } catch (err) {
         console.error("Unexpected error:", err);
@@ -231,15 +254,15 @@ export default function InvitationPage() {
             <RcsCheckbox
               className="justify-end mt-2"
               label="da! ne vedem"
-              checked={presenceStatus === "yes"}
-              onChange={() => setPresenceStatus("yes")}
+              checked={presenceStatus === PresenceStatus.ATTENDING}
+              onChange={() => setPresenceStatus(PresenceStatus.ATTENDING)}
               id="chk-sat"
             />
             <RcsCheckbox
               className="justify-end mt-2"
               label="nu..."
-              checked={presenceStatus === "no"}
-              onChange={() => setPresenceStatus("no")}
+              checked={presenceStatus === PresenceStatus.NOT_ATTENDING}
+              onChange={() => setPresenceStatus(PresenceStatus.NOT_ATTENDING)}
               id="chk-sun"
             />
             <div className="flex justify-end mt-3">
@@ -254,7 +277,11 @@ export default function InvitationPage() {
                 noBg={
                   updateBtnState === "success" || updateBtnState === "error"
                 }
-                label={presenceStatus === "no" ? "confirmă :(" : "confirmă!"}
+                label={
+                  presenceStatus === PresenceStatus.NOT_ATTENDING
+                    ? "confirmă :("
+                    : "confirmă!"
+                }
                 onClick={handleUpdatePresence}
                 isLoading={updateBtnState === "loading"}
               />
