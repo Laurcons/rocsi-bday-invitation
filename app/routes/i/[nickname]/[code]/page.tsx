@@ -22,6 +22,7 @@ import lipstickKiss from "../../../../assets/lipstick-kiss.png";
 import hibiscus from "../../../../assets/hibiscus.png";
 import redMartini from "../../../../assets/red-martini.png";
 import discoCat from "../../../../assets/disco-cat.png";
+import xoxo from "../../../../assets/xoxo.png";
 import { RcsCheckbox } from "~/lib/ui/checkbox";
 import { RcsButton } from "~/lib/ui/button";
 
@@ -231,6 +232,10 @@ export default function InvitationPage() {
 
         <div className="absolute right-8 top-150">
           <img src={discoBall} alt="disco ball" className="w-40" />
+        </div>
+
+        <div className="absolute left-33 top-130">
+          <img src={xoxo} alt="xoxo" className="w-20" />
         </div>
 
         <div className="absolute right-20 top-140">
