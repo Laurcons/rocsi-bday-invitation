@@ -144,7 +144,7 @@ export default function InvitationPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100">
+      <div className="min-h-screen flex items-center justify-center bg-beige">
         <div className="text-center">
           <div className="animate-bounce mb-6">
             <div className="text-6xl">🎉</div>
@@ -160,7 +160,7 @@ export default function InvitationPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-pink-50">
+      <div className="min-h-screen flex items-center justify-center bg-beige">
         <div className="text-center max-w-md mx-4">
           <div className="text-6xl mb-4">😔</div>
           <h1 className="text-2xl font-bold text-red-600 mb-4">Ups!</h1>
