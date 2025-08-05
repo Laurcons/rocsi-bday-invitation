@@ -43,15 +43,33 @@ export default function InvitationPage() {
   const [error, setError] = useState<string | null>(null);
 
   const [presenceStatus, setPresenceStatus] = useState<PresenceStatus | null>(
-    PresenceStatus.ATTENDING
+    null
   );
 
   async function handleUpdatePresence() {
-    if (!code) return;
+    if (!code || presenceStatus === null) return;
 
     setUpdateBtnState("loading");
 
     try {
+      // Call the RPC function to set presence status
+      const { data: presenceData, error: rpcError } = await supabase.rpc(
+        "set_presence_by_invitation_code",
+        {
+          input_code: code,
+          input_presence_status: presenceStatus,
+        }
+      );
+
+      if (rpcError) {
+        console.error("RPC error:", rpcError);
+        setUpdateBtnState("error");
+        setTimeout(() => {
+          setUpdateBtnState(null);
+        }, 1000);
+        return;
+      }
+
       // Send presence changed event
       await sendPresenceChangedEvent(code, presenceStatus);
 
@@ -96,9 +114,17 @@ export default function InvitationPage() {
           return;
         }
 
-        // Get the nickname from the returned record
+        // Get the invitation data from the returned record
         const invitation = invitationData[0];
         setUserNickname(invitation.nickname);
+
+        // Set the presence status from the database
+        if (invitation.presence_status) {
+          setPresenceStatus(invitation.presence_status as PresenceStatus);
+        } else {
+          // If no status is set, default to null (no selection)
+          setPresenceStatus(null);
+        }
 
         // Send page open event
         if (code) {
@@ -272,15 +298,19 @@ export default function InvitationPage() {
                     ? "bg-green-300"
                     : updateBtnState === "error"
                       ? "bg-red-300"
-                      : ""
+                      : presenceStatus === null
+                        ? "opacity-50 cursor-not-allowed"
+                        : ""
                 }
                 noBg={
                   updateBtnState === "success" || updateBtnState === "error"
                 }
                 label={
-                  presenceStatus === PresenceStatus.NOT_ATTENDING
-                    ? "confirmă :("
-                    : "confirmă!"
+                  presenceStatus === null
+                    ? "confirmă"
+                    : presenceStatus === PresenceStatus.NOT_ATTENDING
+                      ? "confirmă :("
+                      : "confirmă!"
                 }
                 onClick={handleUpdatePresence}
                 isLoading={updateBtnState === "loading"}
