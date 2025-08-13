@@ -277,7 +277,7 @@ export default function InvitationPage() {
           <br />
           ora 17:00
           <br />
-          the guild hall
+          dipic fun cluj
         </div>
         <div className="mt-12 flex justify-end px-1 beige-shadow">
           <div className="font-courier-prime w-50">
